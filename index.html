@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfiniteFinance Debate</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+    }
+    h1 {
+      color: #222;
+    }
+    .response {
+      background: #fff;
+      padding: 1rem;
+      margin-top: 1rem;
+      border-radius: 6px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h1>InfiniteFinance Debate</h1>
+  <p id="topic"></p>
+  <div id="transcript"></div>
+
+  <script>
+    fetch('./debate.json')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('topic').innerHTML = 
+          `<strong>🗞️ Topic:</strong> ${data.topic}<br><strong>📡 Source:</strong> ${data.source}`;
+
+        const transcriptDiv = document.getElementById('transcript');
+        const parts = data.transcript.split(/\n{2,}/);
+
+        parts.forEach(part => {
+          const block = document.createElement('div');
+          block.className = 'response';
+          block.textContent = part;
+          transcriptDiv.appendChild(block);
+        });
+      });
+  </script>
+</body>
+</html>
