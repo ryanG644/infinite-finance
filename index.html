@@ -3,131 +3,96 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InfiniteFinance</title>
+  <title>InfiniteFinance Debate</title>
   <style>
-    body {
+    * {
       margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #0d0d0d;
-      color: #eaeaea;
+      padding: 0;
+      box-sizing: border-box;
     }
-
+    body {
+      background: #0c0c0c;
+      color: #eaeaea;
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+    }
     header {
-      background: #111;
+      position: fixed;
+      top: 0;
+      width: 100%;
       padding: 1rem 2rem;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 2px solid #222;
+      border-bottom: 1px solid #333;
     }
-
     header h1 {
-      margin: 0;
-      font-size: 1.5rem;
-      color: #00ffd5;
+      color: #00ffc8;
+      font-size: 1.3rem;
     }
-
     .meta {
       font-size: 0.9rem;
       color: #aaa;
     }
-
-    .faces {
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      padding: 2rem;
-      background: #121212;
-      border-bottom: 2px solid #222;
+    .bg-left, .bg-right {
+      position: fixed;
+      top: 60px;
+      bottom: 0;
+      width: 22%;
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.3;
+      z-index: 1;
     }
-
-    .person {
-      text-align: center;
-      width: 180px;
+    .bg-left {
+      left: 0;
+      background-image: url('baren.png');
     }
-
-    .person img {
-      width: 160px;
-      height: 160px;
-      object-fit: cover;
-      object-position: center;
-      border-radius: 50%;
-      border: 3px solid #fff;
-      box-shadow: 0 0 6px rgba(255,255,255,0.2);
+    .bg-right {
+      right: 0;
+      background-image: url('cathie.png');
     }
-
-    .person .name {
-      margin-top: 0.5rem;
-      font-weight: bold;
-      font-size: 1.1rem;
-    }
-
-    .debate {
-      padding: 2rem;
+    .transcript {
+      margin: 100px auto 40px;
       max-width: 800px;
-      margin: auto;
+      padding: 2rem;
+      background: rgba(0, 0, 0, 0.75);
+      border-radius: 10px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 0 10px rgba(255,255,255,0.05);
     }
-
-    .bubble {
-      margin: 1rem 0;
-      padding: 1rem;
-      border-radius: 12px;
-      line-height: 1.5;
-      max-width: 80%;
-    }
-
-    .left {
-      background: #1e1e5a;
-      align-self: flex-start;
-      text-align: left;
-    }
-
-    .right {
-      background: #5a1e2e;
-      align-self: flex-end;
-      text-align: right;
-      margin-left: auto;
+    .transcript p {
+      margin-bottom: 1.5rem;
+      line-height: 1.7;
+      font-size: 1.1rem;
     }
   </style>
 </head>
 <body>
-
   <header>
     <h1>InfiniteFinance</h1>
-    <div class="meta">
-      📅 Debate of the Day | 🎙️ AI Debate #06 of 24
-    </div>
+    <div class="meta">📅 Debate of the Day | 🎙️ AI Debate #06 of 24</div>
   </header>
 
-  <div class="faces">
-    <div class="person">
-      <img src="faces.png" style="object-position: left;" alt="Baren Buffet">
-      <div class="name">Baren Buffet</div>
-    </div>
-    <div class="person">
-      <img src="faces.png" style="object-position: right;" alt="Cathie Cood">
-      <div class="name">Cathie Cood</div>
-    </div>
-  </div>
+  <div class="bg-left"></div>
+  <div class="bg-right"></div>
 
-  <div class="debate" id="debate">
-    <!-- JS will inject bubbles here -->
-  </div>
+  <div class="transcript" id="debate"></div>
 
   <script>
     fetch('debate.json')
       .then(res => res.json())
       .then(data => {
         const container = document.getElementById('debate');
-        const transcript = data.transcript.split(/\n{2,}/);
-        let side = 'left';
-
-        transcript.forEach(part => {
-          const div = document.createElement('div');
-          div.className = `bubble ${side}`;
-          div.textContent = part;
-          container.appendChild(div);
-          side = side === 'left' ? 'right' : 'left';
+        const paragraphs = data.transcript.split(/\n{2,}/);
+        paragraphs.forEach(text => {
+          const p = document.createElement('p');
+          p.textContent = text;
+          container.appendChild(p);
         });
       });
   </script>
