@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>InfiniteFinance Debate</title>
   <style>
     * {
@@ -10,65 +10,84 @@
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
-      background: #0c0c0c;
-      color: #eaeaea;
+      background: #0b0b0b;
+      color: #f5f5f5;
       font-family: 'Segoe UI', sans-serif;
       overflow-x: hidden;
     }
+
     header {
       position: fixed;
       top: 0;
       width: 100%;
       padding: 1rem 2rem;
-      background: rgba(0, 0, 0, 0.8);
+      background: rgba(0, 0, 0, 0.85);
       z-index: 10;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid #222;
     }
+
     header h1 {
       color: #00ffc8;
       font-size: 1.3rem;
     }
+
     .meta {
       font-size: 0.9rem;
-      color: #aaa;
+      color: #999;
     }
+
     .bg-left, .bg-right {
       position: fixed;
       top: 60px;
       bottom: 0;
-      width: 22%;
-      background-size: contain;
+      width: 24%;
+      background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
-      opacity: 0.3;
+      opacity: 0.18;
       z-index: 1;
     }
+
     .bg-left {
       left: 0;
       background-image: url('baren.png');
     }
+
     .bg-right {
       right: 0;
       background-image: url('cathie.png');
     }
+
     .transcript {
-      margin: 100px auto 40px;
-      max-width: 800px;
+      margin: 120px auto 60px;
+      max-width: 850px;
       padding: 2rem;
-      background: rgba(0, 0, 0, 0.75);
-      border-radius: 10px;
+      background: rgba(12, 12, 12, 0.9);
+      border-radius: 8px;
       position: relative;
       z-index: 2;
-      box-shadow: 0 0 10px rgba(255,255,255,0.05);
     }
+
     .transcript p {
-      margin-bottom: 1.5rem;
+      margin-bottom: 1.8rem;
       line-height: 1.7;
       font-size: 1.1rem;
+    }
+
+    @media (max-width: 768px) {
+      .bg-left, .bg-right {
+        display: none;
+      }
+
+      .transcript {
+        margin: 100px 1rem 40px;
+        padding: 1.5rem;
+      }
     }
   </style>
 </head>
@@ -98,5 +117,6 @@
   </script>
 </body>
 </html>
+
 
 
