@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>InfiniteFinance Test</title>
+  <title>InfiniteFinance Visual Test</title>
   <style>
     * {
       margin: 0;
@@ -12,10 +12,14 @@
     }
 
     body {
-      background: #0c0c0c;
+      background-color: #000;
+      background-image: url('baren.png');
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+      height: 100vh;
       color: #fff;
       font-family: 'Segoe UI', sans-serif;
-      overflow-x: hidden;
     }
 
     header {
@@ -23,50 +27,20 @@
       top: 0;
       width: 100%;
       padding: 1rem 2rem;
-      background: rgba(0, 0, 0, 0.85);
+      background: rgba(0, 0, 0, 0.8);
       border-bottom: 1px solid #333;
       z-index: 10;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
     }
 
-    header h1 {
+    h1 {
       color: #00ffc8;
-      font-size: 1.3rem;
     }
-
-    .bg-left, .bg-right {
-      position: fixed;
-      top: 60px;
-      bottom: 0;
-      width: 30%;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      opacity: 0.3;
-      z-index: 1;
-    }
-
-    .bg-left {
-      left: 0;
-      background-image: url('baren.png');
-    }
-
-    .bg-right {
-      right: 0;
-      background-image: url('cathie.png');
-    }
-
   </style>
 </head>
 <body>
   <header>
     <h1>InfiniteFinance</h1>
   </header>
-
-  <div class="bg-left"></div>
-  <div class="bg-right"></div>
 </body>
 </html>
 
