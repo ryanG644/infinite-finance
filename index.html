@@ -10,14 +10,12 @@
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
       background: #0b0b0b;
       color: #f5f5f5;
       font-family: 'Segoe UI', sans-serif;
       overflow-x: hidden;
     }
-
     header {
       position: fixed;
       top: 0;
@@ -30,17 +28,14 @@
       align-items: center;
       border-bottom: 1px solid #222;
     }
-
     header h1 {
       color: #00ffc8;
       font-size: 1.3rem;
     }
-
     .meta {
       font-size: 0.9rem;
       color: #999;
     }
-
     .bg-left, .bg-right {
       position: fixed;
       top: 60px;
@@ -49,20 +44,17 @@
       background-size: cover;
       background-repeat: no-repeat;
       background-position: center;
-      opacity: 0.18;
+      opacity: 0.6; /* Increased from 0.18 to make images more visible */
       z-index: 1;
     }
-
     .bg-left {
       left: 0;
-      background-image: url('baren.png');
+      background-image: url('./baren.png'); /* Added ./ for explicit relative path */
     }
-
     .bg-right {
       right: 0;
-      background-image: url('cathie.png');
+      background-image: url('./cathie.png'); /* Added ./ for explicit relative path */
     }
-
     .transcript {
       margin: 120px auto 60px;
       max-width: 850px;
@@ -72,18 +64,15 @@
       position: relative;
       z-index: 2;
     }
-
     .transcript p {
       margin-bottom: 1.8rem;
       line-height: 1.7;
       font-size: 1.1rem;
     }
-
     @media (max-width: 768px) {
       .bg-left, .bg-right {
         display: none;
       }
-
       .transcript {
         margin: 100px 1rem 40px;
         padding: 1.5rem;
@@ -96,27 +85,47 @@
     <h1>InfiniteFinance</h1>
     <div class="meta">📅 Debate of the Day | 🎙️ AI Debate #06 of 24</div>
   </header>
-
   <div class="bg-left"></div>
   <div class="bg-right"></div>
-
-  <div class="transcript" id="debate"></div>
-
+  <div class="transcript" id="debate">
+    <!-- Adding some fallback content in case JSON doesn't load -->
+    <p>Wall Street Analyst: The court's decision to strike down the Trump administration's reciprocal tariffs is a positive development for both domestic and international markets. The tariffs were essentially an artificial barrier to trade, disrupting the free flow of goods between nations. This led to price distortions, inefficiencies, and ultimately, lower economic growth. Now, with this decision, markets can normalize, prices can adjust, and we can expect a more stable economic environment. This will stimulate investment, production, and consumption, leading to a more prosperous economy. Furthermore, it will also ease geopolitical tensions, fostering better international relations, which is ultimately beneficial for global trade and growth.</p>
+    
+    <p>Your turn, Crypto Evangelist. How do you interpret this development in a crypto context?</p>
+    
+    <p>Crypto Evangelist: From a crypto perspective, the court's decision could be interpreted in two ways. First, it could be viewed as a validation of decentralized systems. The tariffs were a form of central control that distorted market efficiency. Striking them down is a step towards free market principles, which is a core tenet of decentralized finance, or DeFi.</p>
+    
+    <p>Second, this decision could potentially fuel inflation fears. If the removal of tariffs leads to an increase in imports, this could result in an oversupply of dollars in foreign markets, depreciating the value of the dollar and fueling inflation. In this scenario, cryptocurrencies, particularly Bitcoin, could act as a hedge against inflation, attracting more investors. However, the link between tariffs and inflation is complex and other factors also play a critical role.</p>
+  </div>
   <script>
-    fetch('debate.json')
-      .then(res => res.json())
+    // Fetch debate content from JSON file
+    fetch('./debate.json') // Added ./ for explicit relative path
+      .then(res => {
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        return res.json();
+      })
       .then(data => {
         const container = document.getElementById('debate');
+        // Clear the fallback content
+        container.innerHTML = '';
+        
         const paragraphs = data.transcript.split(/\n{2,}/);
         paragraphs.forEach(text => {
-          const p = document.createElement('p');
-          p.textContent = text;
-          container.appendChild(p);
+          if (text.trim()) { // Only add non-empty paragraphs
+            const p = document.createElement('p');
+            p.textContent = text.trim();
+            container.appendChild(p);
+          }
         });
+      })
+      .catch(error => {
+        console.error('Error loading debate:', error);
+        // Fallback content will remain visible if JSON fails to load
       });
   </script>
 </body>
 </html>
-
 
 
