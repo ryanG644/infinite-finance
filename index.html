@@ -10,33 +10,30 @@
       padding: 0;
       box-sizing: border-box;
     }
-    
+
     body {
-      background: linear-gradient(135deg, #2c2c2c 0%, #1a1a1a 100%);
-      color: #333;
-      font-family: 'Georgia', 'Times New Roman', serif;
+      background: linear-gradient(135deg, #1e1e2f 0%, #000000 100%);
+      color: #ffffff;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       overflow-x: hidden;
       height: 100vh;
       display: flex;
       flex-direction: column;
     }
-    
-    /* Header */
+
     .header {
       position: absolute;
       top: 30px;
       left: 50px;
       z-index: 100;
     }
-    
+
     .header h1 {
-      font-size: 1.4rem;
-      font-weight: normal;
-      color: #333;
-      letter-spacing: 1px;
+      font-size: 1.6rem;
+      font-weight: bold;
+      color: #00ffe1;
     }
-    
-    /* Navigation */
+
     .nav {
       position: absolute;
       top: 30px;
@@ -45,27 +42,25 @@
       display: flex;
       gap: 30px;
     }
-    
+
     .nav a {
-      color: #666;
+      color: #bbbbbb;
       text-decoration: none;
       font-size: 0.95rem;
       transition: color 0.3s ease;
     }
-    
+
     .nav a:hover {
-      color: #333;
+      color: #00ffe1;
     }
-    
-    /* Main container */
+
     .container {
       flex: 1;
       display: flex;
       align-items: center;
       position: relative;
     }
-    
-    /* Character portraits */
+
     .portrait {
       position: absolute;
       top: 0;
@@ -74,46 +69,44 @@
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
-      opacity: 0.3;
+      opacity: 0.4;
       z-index: 1;
     }
-    
+
     .portrait-left {
       left: 50px;
       background-image: url('./baren.png');
     }
-    
+
     .portrait-right {
       right: 50px;
       background-image: url('./cathie.png');
     }
-    
-    /* Navigation arrows */
+
     .nav-arrow {
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
       font-size: 2rem;
-      color: #666;
+      color: #aaaaaa;
       cursor: pointer;
       z-index: 10;
       transition: color 0.3s ease;
       user-select: none;
     }
-    
+
     .nav-arrow:hover {
-      color: #333;
+      color: #ffffff;
     }
-    
+
     .nav-arrow.left {
       left: 30px;
     }
-    
+
     .nav-arrow.right {
       right: 30px;
     }
-    
-    /* Central content area */
+
     .content {
       position: absolute;
       top: 50%;
@@ -124,77 +117,72 @@
       text-align: center;
       z-index: 5;
     }
-    
-    /* Welcome modal */
+
     .welcome-modal {
-      background: rgba(255, 255, 255, 0.95);
+      background: rgba(255, 255, 255, 0.98);
+      color: #111;
       backdrop-filter: blur(10px);
       padding: 40px;
       border-radius: 8px;
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
       margin-bottom: 40px;
     }
-    
+
     .welcome-modal h2 {
       font-size: 1.3rem;
       margin-bottom: 20px;
-      font-weight: normal;
-      color: #333;
+      font-weight: bold;
     }
-    
+
     .welcome-modal p {
       line-height: 1.6;
       margin-bottom: 25px;
-      color: #555;
       font-size: 0.95rem;
     }
-    
+
     .play-button {
-      background: #f0f0f0;
-      border: 1px solid #ccc;
+      background: #222;
+      border: none;
       padding: 12px 30px;
       border-radius: 4px;
       cursor: pointer;
-      font-size: 0.9rem;
+      font-size: 0.95rem;
+      color: #fff;
       transition: all 0.3s ease;
-      color: #333;
     }
-    
+
     .play-button:hover {
-      background: #e0e0e0;
-      border-color: #999;
+      background: #00ffe1;
+      color: #111;
     }
-    
-    /* Debate content (hidden initially) */
+
     .debate-content {
       display: none;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(0, 0, 0, 0.85);
       padding: 40px;
       border-radius: 8px;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
       text-align: left;
     }
-    
+
     .debate-content.active {
       display: block;
     }
-    
+
     .speaker {
       font-weight: bold;
-      color: #333;
+      color: #00ffe1;
       margin-bottom: 10px;
       font-size: 1rem;
     }
-    
+
     .speech {
       line-height: 1.7;
       margin-bottom: 30px;
-      color: #555;
       font-size: 0.95rem;
+      color: #dddddd;
     }
-    
-    /* Audio controls */
+
     .audio-controls {
       position: fixed;
       bottom: 40px;
@@ -203,48 +191,42 @@
       display: none;
       align-items: center;
       gap: 20px;
-      background: rgba(255, 255, 255, 0.9);
+      background: #1e1e2f;
       padding: 15px 25px;
       border-radius: 30px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
       z-index: 100;
     }
-    
+
     .audio-controls.active {
       display: flex;
     }
-    
+
     .control-btn {
       background: none;
       border: none;
       font-size: 1.2rem;
       cursor: pointer;
-      color: #666;
-      transition: color 0.3s ease;
+      color: #00ffe1;
     }
-    
-    .control-btn:hover {
-      color: #333;
-    }
-    
+
     .progress-bar {
       width: 200px;
       height: 4px;
-      background: #ddd;
+      background: #444;
       border-radius: 2px;
       position: relative;
       cursor: pointer;
     }
-    
+
     .progress-fill {
       height: 100%;
-      background: #666;
+      background: #00ffe1;
       border-radius: 2px;
       width: 0%;
       transition: width 0.1s ease;
     }
-    
-    /* Quote overlay */
+
     .quote-overlay {
       position: absolute;
       top: 120px;
@@ -255,57 +237,33 @@
       z-index: 2;
       padding: 0 20px;
     }
-    
+
     .quote {
       font-size: 1.1rem;
       line-height: 1.6;
-      color: #333;
+      color: #bbbbbb;
       margin-bottom: 15px;
       font-style: italic;
     }
-    
+
     .quote-author {
       font-size: 0.9rem;
-      color: #666;
+      color: #888888;
     }
-    
-    /* Responsive design */
+
     @media (max-width: 768px) {
       .portrait {
         display: none;
       }
-      
-      .header, .nav {
-        position: relative;
-        top: auto;
-        left: auto;
-        right: auto;
-        padding: 20px;
-      }
-      
-      .nav {
-        justify-content: center;
-        margin-top: -10px;
-      }
-      
       .content {
-        position: relative;
+        transform: none;
         top: auto;
         left: auto;
-        transform: none;
-        width: 100%;
         padding: 20px;
+        position: relative;
       }
-      
-      .container {
-        flex-direction: column;
-        padding: 20px 0;
-      }
-      
       .nav-arrow {
-        bottom: 20px;
-        top: auto;
-        transform: none;
+        display: none;
       }
     }
   </style>
@@ -314,59 +272,51 @@
   <div class="header">
     <h1>The Infinite Finance</h1>
   </div>
-  
+
   <nav class="nav">
-    <a href="#about">About</a>
-    <a href="#faq">FAQ</a>
-    <a href="#contact">Contact</a>
-    <a href="#share">Share</a>
+    <a href="#">About</a>
+    <a href="#">FAQ</a>
+    <a href="#">Contact</a>
+    <a href="#">Share</a>
   </nav>
-  
+
   <div class="container">
     <div class="portrait portrait-left"></div>
     <div class="portrait portrait-right"></div>
-    
+
     <div class="nav-arrow left" onclick="previousDebate()">⏮</div>
     <div class="nav-arrow right" onclick="nextDebate()">⏭</div>
-    
+
     <div class="quote-overlay">
       <div class="quote">
-        "It signifies that we are on the verge of a complete market transformation and we don't know it. 
-        The signs are everywhere. We have an industry of speculation and algorithmic control, like never before."
+        "It signifies that we are on the verge of a complete market transformation and we don't know it."
       </div>
       <div class="quote-author">— Current Financial Debate</div>
     </div>
-    
+
     <div class="content">
       <div class="welcome-modal" id="welcomeModal">
         <h2>Welcome to the Infinite Finance:</h2>
         <p>
-          An AI generated, never-ending discussion between Warren Buffett and Cathie Wood. 
-          Everything you hear is fully generated by a machine. The opinions and beliefs expressed 
-          do not represent anyone. They are the hallucinations of a financial algorithm.
+          An AI generated, never-ending discussion between Warren Buffett and Cathie Wood.
+          Everything you hear is fully generated by a machine.
         </p>
         <button class="play-button" onclick="startDebate()">Play audio</button>
       </div>
-      
+
       <div class="debate-content" id="debateContent">
         <div class="speaker">Warren Buffett:</div>
         <div class="speech">
-          The court's decision to strike down these reciprocal tariffs reminds me of something Ben Graham taught me years ago - markets eventually correct artificial distortions. These tariffs were like putting a thumb on the scale of free trade, and now that thumb has been removed.
+          The court's decision to strike down these reciprocal tariffs reminds me of something Ben Graham taught me years ago.
         </div>
-        
         <div class="speaker">Cathie Wood:</div>
         <div class="speech">
-          Warren, I appreciate the Graham reference, but I think we need to view this through the lens of technological disruption. This decision could accelerate the adoption of blockchain-based trade finance solutions. When traditional barriers fall, innovative technologies often fill the void.
-        </div>
-        
-        <div class="speaker">Warren Buffett:</div>
-        <div class="speech">
-          Cathie, you know I'm skeptical of anything that sounds too revolutionary. But I'll grant you this - removing trade barriers has historically benefited companies with strong competitive moats. The question is whether your tech darlings can build sustainable advantages or if they're just riding a wave of speculation.
+          Warren, I appreciate the Graham reference, but I think we need to view this through the lens of technological disruption.
         </div>
       </div>
     </div>
   </div>
-  
+
   <div class="audio-controls" id="audioControls">
     <button class="control-btn" onclick="togglePlay()">⏸️</button>
     <div class="progress-bar" onclick="seekAudio(event)">
@@ -374,117 +324,62 @@
     </div>
     <span id="timeDisplay">0:00 / 0:00</span>
   </div>
-  
+
   <script>
     let isPlaying = false;
     let currentTime = 0;
-    let totalTime = 300; // 5 minutes example
+    let totalTime = 300;
     let playInterval;
-    
+
     function startDebate() {
       document.getElementById('welcomeModal').style.display = 'none';
       document.getElementById('debateContent').classList.add('active');
       document.getElementById('audioControls').classList.add('active');
-      
-      // Start "playing" the debate
       isPlaying = true;
       playInterval = setInterval(updateProgress, 1000);
-      
-      // Load debate content from JSON if available
-      loadDebateContent();
     }
-    
+
     function togglePlay() {
       isPlaying = !isPlaying;
-      const btn = document.querySelector('.control-btn');
-      btn.textContent = isPlaying ? '⏸️' : '▶️';
-      
-      if (isPlaying) {
-        playInterval = setInterval(updateProgress, 1000);
-      } else {
-        clearInterval(playInterval);
-      }
+      document.querySelector('.control-btn').textContent = isPlaying ? '⏸️' : '▶️';
+      if (isPlaying) playInterval = setInterval(updateProgress, 1000);
+      else clearInterval(playInterval);
     }
-    
+
     function updateProgress() {
       if (isPlaying && currentTime < totalTime) {
         currentTime++;
         const progress = (currentTime / totalTime) * 100;
         document.getElementById('progressFill').style.width = progress + '%';
-        
         const minutes = Math.floor(currentTime / 60);
         const seconds = currentTime % 60;
         const totalMinutes = Math.floor(totalTime / 60);
         const totalSeconds = totalTime % 60;
-        
-        document.getElementById('timeDisplay').textContent = 
+        document.getElementById('timeDisplay').textContent =
           `${minutes}:${seconds.toString().padStart(2, '0')} / ${totalMinutes}:${totalSeconds.toString().padStart(2, '0')}`;
       }
     }
-    
-    function seekAudio(event) {
-      const rect = event.target.getBoundingClientRect();
-      const percent = (event.clientX - rect.left) / rect.width;
+
+    function seekAudio(e) {
+      const rect = e.target.getBoundingClientRect();
+      const percent = (e.clientX - rect.left) / rect.width;
       currentTime = Math.floor(percent * totalTime);
       updateProgress();
     }
-    
+
     function nextDebate() {
-      // Load next debate segment
-      console.log('Loading next debate...');
-      // Reset progress
+      console.log('Next debate...');
       currentTime = 0;
       updateProgress();
     }
-    
+
     function previousDebate() {
-      // Load previous debate segment
-      console.log('Loading previous debate...');
-      // Reset progress
+      console.log('Previous debate...');
       currentTime = 0;
       updateProgress();
-    }
-    
-    function loadDebateContent() {
-      // Try to load from your JSON file
-      fetch('./debate.json')
-        .then(res => res.ok ? res.json() : Promise.reject())
-        .then(data => {
-          const container = document.getElementById('debateContent');
-          container.innerHTML = '';
-          
-          const paragraphs = data.transcript.split(/\n{2,}/);
-          paragraphs.forEach(text => {
-            if (text.trim()) {
-              const div = document.createElement('div');
-              
-              // Simple speaker detection
-              if (text.includes(':')) {
-                const [speaker, ...speechParts] = text.split(':');
-                const speakerDiv = document.createElement('div');
-                speakerDiv.className = 'speaker';
-                speakerDiv.textContent = speaker.trim() + ':';
-                
-                const speechDiv = document.createElement('div');
-                speechDiv.className = 'speech';
-                speechDiv.textContent = speechParts.join(':').trim();
-                
-                container.appendChild(speakerDiv);
-                container.appendChild(speechDiv);
-              } else {
-                const speechDiv = document.createElement('div');
-                speechDiv.className = 'speech';
-                speechDiv.textContent = text.trim();
-                container.appendChild(speechDiv);
-              }
-            }
-          });
-        })
-        .catch(() => {
-          console.log('Using fallback debate content');
-        });
     }
   </script>
 </body>
 </html>
+
 
