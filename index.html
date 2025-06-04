@@ -552,6 +552,12 @@
     let playInterval;
     let currentDebateIndex = 0;
     let currentSpeakerIndex = 0;
+    
+    // Speech synthesis variables
+    let speechSynth = window.speechSynthesis;
+    let maleVoice = null;
+    let femaleVoice = null;
+    let currentUtterance = null;
 
     // Sample debate content
     const debates = [
@@ -638,7 +644,75 @@
       }
     ];
 
-    // Initialize particles
+    // Initialize voices
+    function initializeVoices() {
+      const voices = speechSynth.getVoices();
+      
+      // Try to find good male and female voices
+      maleVoice = voices.find(voice => 
+        voice.name.toLowerCase().includes('male') ||
+        voice.name.toLowerCase().includes('david') ||
+        voice.name.toLowerCase().includes('daniel') ||
+        voice.name.toLowerCase().includes('alex') ||
+        (voice.gender && voice.gender.toLowerCase() === 'male')
+      ) || voices.find(voice => voice.name.toLowerCase().includes('google us-english'));
+      
+      femaleVoice = voices.find(voice => 
+        voice.name.toLowerCase().includes('female') ||
+        voice.name.toLowerCase().includes('samantha') ||
+        voice.name.toLowerCase().includes('karen') ||
+        voice.name.toLowerCase().includes('susan') ||
+        (voice.gender && voice.gender.toLowerCase() === 'female')
+      ) || voices.find(voice => voice.default);
+      
+      // Fallback to default voices if specific ones not found
+      if (!maleVoice) maleVoice = voices[0];
+      if (!femaleVoice) femaleVoice = voices[1] || voices[0];
+    }
+
+    // Speak text with appropriate voice
+    function speakText(text, speakerType) {
+      // Stop any current speech
+      speechSynth.cancel();
+      
+      if (!text.trim()) return;
+      
+      currentUtterance = new SpeechSynthesisUtterance(text);
+      
+      // Configure voice based on speaker
+      if (speakerType === 'buffett' && maleVoice) {
+        currentUtterance.voice = maleVoice;
+        currentUtterance.pitch = 0.8; // Slightly lower pitch for Warren
+        currentUtterance.rate = 0.9;  // Slightly slower, more deliberate
+      } else if (speakerType === 'wood' && femaleVoice) {
+        currentUtterance.voice = femaleVoice;
+        currentUtterance.pitch = 1.1; // Slightly higher pitch for Cathie
+        currentUtterance.rate = 1.0;  // Normal rate
+      }
+      
+      currentUtterance.volume = 0.8;
+      
+      // Handle speech events
+      currentUtterance.onstart = function() {
+        console.log('Speech started');
+      };
+      
+      currentUtterance.onend = function() {
+        console.log('Speech ended');
+        // Auto-advance to next speaker after speech ends
+        setTimeout(() => {
+          if (isPlaying) {
+            nextSpeaker();
+          }
+        }, 1000);
+      };
+      
+      currentUtterance.onerror = function(event) {
+        console.error('Speech error:', event);
+      };
+      
+      speechSynth.speak(currentUtterance);
+    }
     function createParticles() {
       const container = document.getElementById('particles');
       for (let i = 0; i < 50; i++) {
@@ -659,6 +733,12 @@
       isPlaying = true;
       currentTime = 0;
       displayCurrentExchange();
+      
+      // Start speaking the first exchange
+      const debate = debates[currentDebateIndex];
+      const exchange = debate.exchanges[currentSpeakerIndex];
+      speakText(exchange.text, exchange.type);
+      
       playInterval = setInterval(updateProgress, 1000);
     }
 
@@ -684,8 +764,16 @@
       
       if (isPlaying) {
         playInterval = setInterval(updateProgress, 1000);
+        // Resume speech if it was paused
+        if (speechSynth.paused) {
+          speechSynth.resume();
+        }
       } else {
         clearInterval(playInterval);
+        // Pause speech
+        if (speechSynth.speaking) {
+          speechSynth.pause();
+        }
       }
     }
 
@@ -717,6 +805,12 @@
       const debate = debates[currentDebateIndex];
       currentSpeakerIndex = (currentSpeakerIndex + 1) % debate.exchanges.length;
       displayCurrentExchange();
+      
+      // Speak the new exchange
+      const exchange = debate.exchanges[currentSpeakerIndex];
+      if (isPlaying) {
+        speakText(exchange.text, exchange.type);
+      }
     }
 
     function seekAudio(e) {
@@ -727,18 +821,36 @@
     }
 
     function nextDebate() {
+      speechSynth.cancel(); // Stop current speech
       currentDebateIndex = (currentDebateIndex + 1) % debates.length;
       currentSpeakerIndex = 0;
       currentTime = 0;
       displayCurrentExchange();
+      
+      // Start speaking the new debate
+      const debate = debates[currentDebateIndex];
+      const exchange = debate.exchanges[currentSpeakerIndex];
+      if (isPlaying) {
+        speakText(exchange.text, exchange.type);
+      }
+      
       updateProgress();
     }
 
     function previousDebate() {
+      speechSynth.cancel(); // Stop current speech
       currentDebateIndex = currentDebateIndex > 0 ? currentDebateIndex - 1 : debates.length - 1;
       currentSpeakerIndex = 0;
       currentTime = 0;
       displayCurrentExchange();
+      
+      // Start speaking the new debate
+      const debate = debates[currentDebateIndex];
+      const exchange = debate.exchanges[currentSpeakerIndex];
+      if (isPlaying) {
+        speakText(exchange.text, exchange.type);
+      }
+      
       updateProgress();
     }
 
@@ -774,6 +886,13 @@
     document.addEventListener('DOMContentLoaded', function() {
       createParticles();
       displayCurrentExchange();
+      
+      // Initialize voices when they're loaded
+      if (speechSynth.getVoices().length > 0) {
+        initializeVoices();
+      } else {
+        speechSynth.addEventListener('voiceschanged', initializeVoices);
+      }
     });
   </script>
 </body>
