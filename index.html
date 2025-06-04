@@ -642,6 +642,103 @@
         speechSynth.speak(currentUtterance);
       }, 100); // 100ms delay to ensure clean transition
     }
+
+    // Load debate playlist from server
+    async function loadDebatePlaylist() {
+      if (isLoadingDebates) return;
+      
+      try {
+        isLoadingDebates = true;
+        console.log('📋 Loading debate playlist...');
+        
+        const response = await fetch('/debates/playlist.json');
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const playlist = await response.json();
+        debatePlaylist = playlist.files || [];
+        
+        console.log(`📚 Found ${debatePlaylist.length} debates in playlist`);
+        
+        if (debatePlaylist.length > 0) {
+          await loadDebateFromFile(debatePlaylist[0]);
+          console.log('✅ Loaded first debate successfully');
+        } else {
+          console.warn('⚠️ No debates found in playlist');
+          initializeSampleDebates();
+        }
+        
+      } catch (error) {
+        console.error('❌ Failed to load playlist:', error);
+        // Fall back to sample data if real debates aren't available
+        console.log('🔄 Using sample debates as fallback');
+        initializeSampleDebates();
+      } finally {
+        isLoadingDebates = false;
+      }
+    }
+
+    // Load individual debate file
+    async function loadDebateFromFile(filename) {
+      try {
+        console.log(`📖 Loading debate: ${filename}`);
+        
+        const response = await fetch(`/debates/${filename}`);
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const debate = await response.json();
+        
+        // Convert to the format expected by the web app
+        const formattedDebate = {
+          topic: debate.topic,
+          quote: debate.quote,
+          author: debate.author,
+          exchanges: debate.exchanges
+        };
+        
+        // Replace the current debate
+        debates[currentDebateIndex] = formattedDebate;
+        currentSpeakerIndex = 0;
+        
+        displayCurrentExchange();
+        return true;
+        
+      } catch (error) {
+        console.error(`❌ Failed to load debate ${filename}:`, error);
+        return false;
+      }
+    }
+
+    // Initialize with sample debates (fallback)
+    function initializeSampleDebates() {
+      debates = [
+        {
+          topic: "Market Volatility and Tech Valuations",
+          quote: "The stock market is a voting machine in the short run, but a weighing machine in the long run.",
+          author: "Warren Buffett",
+          exchanges: [
+            {
+              speaker: "Warren Buffett",
+              text: "The court's decision to strike down these reciprocal tariffs reminds me of something Ben Graham taught me years ago. When the market gets emotional about policy changes, that's when rational investors find their greatest opportunities.",
+              type: "buffett"
+            },
+            {
+              speaker: "Cathie Wood",
+              text: "Warren, I appreciate the Graham reference, but I think we need to view this through the lens of technological disruption. The companies driving real innovation today are being undervalued by traditional metrics.",
+              type: "wood"
+            }
+          ]
+        }
+      ];
+      
+      currentDebateIndex = 0;
+      currentSpeakerIndex = 0;
+      displayCurrentExchange();
+    }
+
     function createParticles() {
       const container = document.getElementById('particles');
       for (let i = 0; i < 50; i++) {
