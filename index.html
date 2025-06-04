@@ -559,90 +559,10 @@
     let femaleVoice = null;
     let currentUtterance = null;
 
-    // Sample debate content
-    const debates = [
-      {
-        topic: "Market Volatility and Tech Valuations",
-        quote: "The stock market is a voting machine in the short run, but a weighing machine in the long run.",
-        author: "Warren Buffett",
-        exchanges: [
-          {
-            speaker: "Warren Buffett",
-            text: "The court's decision to strike down these reciprocal tariffs reminds me of something Ben Graham taught me years ago. When the market gets emotional about policy changes, that's when rational investors find their greatest opportunities.",
-            type: "buffett"
-          },
-          {
-            speaker: "Cathie Wood",
-            text: "Warren, I appreciate the Graham reference, but I think we need to view this through the lens of technological disruption. The companies driving real innovation today are being undervalued by traditional metrics.",
-            type: "wood"
-          },
-          {
-            speaker: "Warren Buffett",
-            text: "Cathie, I've heard this story before during the dot-com bubble. When businesses trade at 50 times revenue with no profits, that's not innovation pricing—that's speculation dressed up in fancy clothes.",
-            type: "buffett"
-          },
-          {
-            speaker: "Cathie Wood",
-            text: "But Warren, we're not in 2000 anymore. These companies have real revenues, real growth, and they're transforming entire industries. Artificial intelligence alone will create trillions in value over the next decade.",
-            type: "wood"
-          }
-        ]
-      },
-      {
-        topic: "Cryptocurrency and Digital Assets",
-        quote: "Bitcoin is a delusion that attracts charlatans.",
-        author: "Warren Buffett",
-        exchanges: [
-          {
-            speaker: "Cathie Wood",
-            text: "Warren, your skepticism about Bitcoin reminds me of how traditional banks viewed the internet in the 1990s. We're witnessing the birth of a new monetary system.",
-            type: "wood"
-          },
-          {
-            speaker: "Warren Buffett",
-            text: "Cathie, I can see a farm, I can see an apartment building, I can see shares of Coca-Cola. But Bitcoin? It produces nothing. It's a gambling device, pure and simple.",
-            type: "buffett"
-          },
-          {
-            speaker: "Cathie Wood",
-            text: "But that's exactly the point, Warren. Bitcoin is digital gold—a store of value that can't be debased by governments. In an era of infinite money printing, scarcity has tremendous value.",
-            type: "wood"
-          },
-          {
-            speaker: "Warren Buffett",
-            text: "If you told me you owned all the Bitcoin in the world and offered it to me for $25, I wouldn't take it. What would I do with it? I'd have to sell it back to you somehow.",
-            type: "buffett"
-          }
-        ]
-      },
-      {
-        topic: "ESG Investing and Sustainability",
-        quote: "The companies that will thrive are those solving humanity's biggest challenges.",
-        author: "Cathie Wood",
-        exchanges: [
-          {
-            speaker: "Cathie Wood",
-            text: "Warren, ESG isn't just about feeling good—it's about identifying the companies that will dominate the next economic cycle. Clean energy, genomics, robotics—these are where the real returns will come from.",
-            type: "wood"
-          },
-          {
-            speaker: "Warren Buffett",
-            text: "I'm all for helping humanity, Cathie, but I invest in businesses, not causes. Berkshire's job is to increase shareholder value, and we do that by buying wonderful companies at fair prices.",
-            type: "buffett"
-          },
-          {
-            speaker: "Cathie Wood",
-            text: "But Warren, that's exactly what I'm talking about. Tesla isn't just a car company—it's an energy and transportation revolution. The companies solving climate change will generate massive profits.",
-            type: "wood"
-          },
-          {
-            speaker: "Warren Buffett",
-            text: "Tesla might be revolutionary, but at current prices, you're paying for perfection. I prefer buying $1 worth of assets for 50 cents, not paying $2 for revolutionary potential.",
-            type: "buffett"
-          }
-        ]
-      }
-    ];
+    // Dynamic debate loading
+    let debates = [];
+    let debatePlaylist = [];
+    let isLoadingDebates = false;
 
     // Initialize voices
     function initializeVoices() {
@@ -836,35 +756,39 @@
 
     function nextDebate() {
       speechSynth.cancel(); // Stop current speech
-      currentDebateIndex = (currentDebateIndex + 1) % debates.length;
-      currentSpeakerIndex = 0;
-      currentTime = 0;
-      displayCurrentExchange();
       
-      // Start speaking the new debate
-      const debate = debates[currentDebateIndex];
-      const exchange = debate.exchanges[currentSpeakerIndex];
-      if (isPlaying) {
-        speakText(exchange.text, exchange.type);
+      if (debatePlaylist.length > 0) {
+        // Load next debate from playlist
+        const nextIndex = (debatePlaylist.indexOf(debatePlaylist.find(f => f.includes('debate'))) + 1) % debatePlaylist.length;
+        loadDebateFromFile(debatePlaylist[nextIndex]);
+      } else {
+        // Fallback to cycling through loaded debates
+        currentDebateIndex = (currentDebateIndex + 1) % debates.length;
+        currentSpeakerIndex = 0;
+        displayCurrentExchange();
       }
       
+      currentTime = 0;
       updateProgress();
     }
 
     function previousDebate() {
       speechSynth.cancel(); // Stop current speech
-      currentDebateIndex = currentDebateIndex > 0 ? currentDebateIndex - 1 : debates.length - 1;
-      currentSpeakerIndex = 0;
-      currentTime = 0;
-      displayCurrentExchange();
       
-      // Start speaking the new debate
-      const debate = debates[currentDebateIndex];
-      const exchange = debate.exchanges[currentSpeakerIndex];
-      if (isPlaying) {
-        speakText(exchange.text, exchange.type);
+      if (debatePlaylist.length > 0) {
+        // Load previous debate from playlist
+        const currentFile = debatePlaylist.find(f => f.includes('debate'));
+        const currentIndex = debatePlaylist.indexOf(currentFile);
+        const prevIndex = currentIndex > 0 ? currentIndex - 1 : debatePlaylist.length - 1;
+        loadDebateFromFile(debatePlaylist[prevIndex]);
+      } else {
+        // Fallback to cycling through loaded debates
+        currentDebateIndex = currentDebateIndex > 0 ? currentDebateIndex - 1 : debates.length - 1;
+        currentSpeakerIndex = 0;
+        displayCurrentExchange();
       }
       
+      currentTime = 0;
       updateProgress();
     }
 
@@ -899,7 +823,6 @@
     // Initialize the app
     document.addEventListener('DOMContentLoaded', function() {
       createParticles();
-      displayCurrentExchange();
       
       // Initialize voices when they're loaded
       if (speechSynth.getVoices().length > 0) {
@@ -907,6 +830,9 @@
       } else {
         speechSynth.addEventListener('voiceschanged', initializeVoices);
       }
+      
+      // Load real debates from server
+      loadDebatePlaylist();
     });
   </script>
 </body>
