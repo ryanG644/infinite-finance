@@ -672,46 +672,55 @@
 
     // Speak text with appropriate voice
     function speakText(text, speakerType) {
-      // Stop any current speech
+      // Stop any current speech completely
       speechSynth.cancel();
       
       if (!text.trim()) return;
       
-      currentUtterance = new SpeechSynthesisUtterance(text);
-      
-      // Configure voice based on speaker
-      if (speakerType === 'buffett' && maleVoice) {
-        currentUtterance.voice = maleVoice;
-        currentUtterance.pitch = 0.8; // Slightly lower pitch for Warren
-        currentUtterance.rate = 0.9;  // Slightly slower, more deliberate
-      } else if (speakerType === 'wood' && femaleVoice) {
-        currentUtterance.voice = femaleVoice;
-        currentUtterance.pitch = 1.1; // Slightly higher pitch for Cathie
-        currentUtterance.rate = 1.0;  // Normal rate
-      }
-      
-      currentUtterance.volume = 0.8;
-      
-      // Handle speech events
-      currentUtterance.onstart = function() {
-        console.log('Speech started');
-      };
-      
-      currentUtterance.onend = function() {
-        console.log('Speech ended');
-        // Auto-advance to next speaker after speech ends
-        setTimeout(() => {
+      // Small delay to ensure previous speech is fully cancelled
+      setTimeout(() => {
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        
+        // Configure voice based on speaker
+        if (speakerType === 'buffett' && maleVoice) {
+          currentUtterance.voice = maleVoice;
+          currentUtterance.pitch = 0.8; // Slightly lower pitch for Warren
+          currentUtterance.rate = 0.9;  // Slightly slower, more deliberate
+        } else if (speakerType === 'wood' && femaleVoice) {
+          currentUtterance.voice = femaleVoice;
+          currentUtterance.pitch = 1.1; // Slightly higher pitch for Cathie
+          currentUtterance.rate = 1.0;  // Normal rate
+        }
+        
+        currentUtterance.volume = 0.8;
+        
+        // Handle speech events
+        currentUtterance.onstart = function() {
+          console.log(`${speakerType} started speaking`);
+        };
+        
+        currentUtterance.onend = function() {
+          console.log(`${speakerType} finished speaking`);
+          // Auto-advance to next speaker after speech ends (only if still playing)
           if (isPlaying) {
-            nextSpeaker();
+            setTimeout(() => {
+              nextSpeaker();
+            }, 1500); // Longer pause between speakers
           }
-        }, 1000);
-      };
-      
-      currentUtterance.onerror = function(event) {
-        console.error('Speech error:', event);
-      };
-      
-      speechSynth.speak(currentUtterance);
+        };
+        
+        currentUtterance.onerror = function(event) {
+          console.error('Speech error:', event);
+          // Try to continue even if there's an error
+          if (isPlaying) {
+            setTimeout(() => {
+              nextSpeaker();
+            }, 2000);
+          }
+        };
+        
+        speechSynth.speak(currentUtterance);
+      }, 100); // 100ms delay to ensure clean transition
     }
     function createParticles() {
       const container = document.getElementById('particles');
@@ -764,14 +773,19 @@
       
       if (isPlaying) {
         playInterval = setInterval(updateProgress, 1000);
-        // Resume speech if it was paused
+        // Resume or start speech
         if (speechSynth.paused) {
           speechSynth.resume();
+        } else if (!speechSynth.speaking) {
+          // If no speech is happening, start with current exchange
+          const debate = debates[currentDebateIndex];
+          const exchange = debate.exchanges[currentSpeakerIndex];
+          speakText(exchange.text, exchange.type);
         }
       } else {
         clearInterval(playInterval);
-        // Pause speech
-        if (speechSynth.speaking) {
+        // Pause speech but don't cancel it
+        if (speechSynth.speaking && !speechSynth.paused) {
           speechSynth.pause();
         }
       }
@@ -780,11 +794,6 @@
     function updateProgress() {
       if (isPlaying && currentTime < totalTime) {
         currentTime++;
-        
-        // Change speaker every 15 seconds
-        if (currentTime % 15 === 0) {
-          nextSpeaker();
-        }
         
         const progress = (currentTime / totalTime) * 100;
         document.getElementById('progressFill').style.width = progress + '%';
@@ -802,14 +811,19 @@
     }
 
     function nextSpeaker() {
+      // Stop current speech first
+      speechSynth.cancel();
+      
       const debate = debates[currentDebateIndex];
       currentSpeakerIndex = (currentSpeakerIndex + 1) % debate.exchanges.length;
       displayCurrentExchange();
       
-      // Speak the new exchange
-      const exchange = debate.exchanges[currentSpeakerIndex];
+      // Speak the new exchange after a brief delay
       if (isPlaying) {
-        speakText(exchange.text, exchange.type);
+        const exchange = debate.exchanges[currentSpeakerIndex];
+        setTimeout(() => {
+          speakText(exchange.text, exchange.type);
+        }, 200);
       }
     }
 
@@ -897,4 +911,3 @@
   </script>
 </body>
 </html>
-
